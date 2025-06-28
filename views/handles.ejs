@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contest Tracker | Your Platform Handles</title>
+  <link rel="icon" type="image/png" href="/images/meme123.jpg" />
+  <link rel="shortcut icon" href="/images/meme123.jpg" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <div class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 mt-[60px]">
+    <%- include('navbar') %>
+
+    <div class="bg-white rounded-2xl shadow-lg p-10 max-w-lg w-full">
+      <h2 class="text-3xl font-extrabold mb-8 text-center tracking-wide" style="color: #000000;font-style: sans-serif;">
+        Your Platform Handles
+      </h2>
+
+<% 
+  const platforms = [
+    { id: 'codeforces', label: 'Codeforces Handle' },
+    { id: 'leetcode', label: 'LeetCode Handle' },
+    { id: 'codechef', label: 'CodeChef Handle' },
+    { id: 'atcoder', label: 'AtCoder Handle' },
+    { id: 'tocoder', label: 'ToCoder Handle' }
+  ];
+%>
+
+<form id="handlesForm" class="space-y-7" method="POST" action="/handles">
+  <% platforms.forEach(({ id, label }) => { 
+       const val = (typeof handles !== 'undefined' && handles[id]) ? handles[id] : '';
+       const disabled = val !== '';
+  %>
+  <div class="flex items-center gap-4">
+    <div class="flex-1">
+      <label for="<%= id %>" class="block text-sm font-semibold text-gray-700 mb-1"><%= label %></label>
+      <input
+        type="text"
+        id="<%= id %>"
+        name="<%= id %>"
+        class="w-full rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300 px-4 py-3 transition disabled:bg-gray-100 disabled:text-gray-500"
+        value="<%= val %>"
+        <%= disabled ? 'disabled' : '' %>
+      />
+    </div>
+    <button
+      type="button"
+      id="edit-<%= id %>"
+      class="mt-6 text-indigo-600 font-semibold text-sm hover:underline focus:outline-none disabled:text-gray-400"
+      onclick="enableInput('<%= id %>')"
+      style=`<%= disabled ? 'display:inline-block;' : 'display:none;' %>`>
+      Re-edit
+    </button>
+  </div>
+  <% }); %>
+
+  <button
+    id="saveBtn"
+    type="submit"
+    class="w-full bg-[#13274F] text-white font-bold py-3 rounded-xl hover:bg-[#002D62] transition disabled:opacity-50 disabled:cursor-not-allowed"
+    disabled
+  >
+    Save Handles
+  </button>
+</form>
+
+
+
+
+    </div>
+
+    <div
+      class="bg-yellow-100 border-l-4 border-yellow-400 text-yellow-700 p-4 max-w-lg w-full mx-auto rounded-lg mt-6 mb-0"
+      role="alert"
+    >
+      <p class="font-semibold">Note:</p>
+      <p>Please make sure you enter valid handles.</p>
+    </div>
+  </div>
+
+  <%- include('footer') %>
+
+  <script>
+    const inputs = document.querySelectorAll('#handlesForm input[type="text"]');
+    const saveBtn = document.getElementById('saveBtn');
+
+    function updateSaveButton() {
+      const anyFilled = Array.from(inputs).some(input => input.value.trim() !== "");
+      saveBtn.disabled = !anyFilled;
+    }
+
+    function updateEditButtons() {
+      inputs.forEach(input => {
+        const btn = document.getElementById(`edit-${input.id}`);
+        if (!btn) return;
+
+        if (input.disabled && input.value.trim() !== "") {
+          btn.style.display = "inline-block";
+          btn.disabled = false;
+        } else {
+          btn.style.display = "none";
+          btn.disabled = true;
+        }
+      });
+    }
+
+    function enableInput(id) {
+      const input = document.getElementById(id);
+      const btn = document.getElementById(`edit-${id}`);
+
+      input.disabled = false;
+      input.focus();
+
+      btn.style.display = "none";
+      btn.disabled = true;
+
+      updateSaveButton();
+      updateEditButtons();
+    }
+
+    inputs.forEach(input => {
+      input.addEventListener('input', () => {
+        updateSaveButton();
+        updateEditButtons();
+      });
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateSaveButton();
+      updateEditButtons();
+    });
+  </script>
+</body>
+</html>

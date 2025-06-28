@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contest Tracker | Upcoming Contests</title>
+  <link rel="icon" type="image/png" href="/images/meme123.jpg" />
+  <link rel="shortcut icon" href="/images/meme123.jpg" />
+  <link rel="stylesheet" href="/stylesheet/upcoming.css">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+  
+  <style>
+    .notification-btn {
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #666;
+      font-size: 1.2rem;
+    }
+    
+    .notification-btn:hover {
+      color: #4F46E5;
+      transform: scale(1.1);
+    }
+    
+    .notification-btn.subscribed {
+      color: #10B981;
+    }
+    
+    .notification-btn.loading {
+      color: #F59E0B;
+      animation: pulse 1s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 0px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      z-index: 1000;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+    
+    .toast.show {
+      transform: translateX(0);
+    }
+    
+    .toast.success {
+      background-color: #10B981;
+    }
+    
+    .toast.error {
+      background-color: #EF4444;
+    }
+    
+    .toast.warning {
+      background-color: #F59E0B;
+    }
+  </style>
+</head>
+<body>
+   <%- include('navbar') %>
+
+   <div class="table-container">
+    <div class="table-data">
+      <table border="1" cellspacing="0" cellpadding="8">
+        <thead>
+          <tr>
+            <th>Platforms</th>
+            <th>Contest Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Duration (mins)</th>
+            <th>Get Notified</th>
+          </tr>
+        </thead>
+        <tbody>
+        <% contests.forEach((contest, index) => { %>
+            <tr>
+            <td><%= contest.platform %></td>
+            <td><a id="linkkk" href="<%= contest.url %>" target="_blank"><%= contest.name %> <i class="ri-link"></i></a></td>
+            <td><%= contest.startDisplay %></td>
+            <td><%= contest.endDisplay %></td>
+            <td><%= contest.duration %> mins</td>
+            <td>
+              <a href="#" class="notification-btn" 
+                 data-contest-id="<%= contest.platform %>_<%= index %>"
+                 data-contest-name="<%= contest.name %>"
+                 data-platform="<%= contest.platform %>"
+                 data-start-time="<%= contest.startISO %>"
+                 data-duration="<%= contest.duration %>"
+                 data-contest-url="<%= contest.url %>"
+                 onclick="subscribeToNotification(this, event)">
+                <i class="ri-notification-3-fill"></i>
+              </a>
+            </td>
+            </tr>
+        <% }) %>
+        </tbody>
+       </table>
+    </div>
+  </div>
+
+  <div class="note">
+    <p style="text-align: center; margin-top: 20px; font-size: 1.1rem; color: #444;">
+  <strong>Note:</strong> This table only displays upcoming contests from the following platforms:
+   <span style="color: #4F46E5;">Codeforces</span>,
+   <span style="color: #E53935;">CodeChef</span>,
+   <span style="color: #FFA500;">LeetCode</span>,
+   <span style="color: #2E7D32;">AtCoder</span>, and
+   <span style="color: #0077B6;">TopCoder</span>.
+   <br><br>
+   <strong>🔔 Click on the notification bell to get email reminders before contests start!</strong>
+   </p>
+  </div>
+
+  <!-- Toast notification container -->
+  <div id="toast"></div>
+
+  <script>
+    // Function to show toast notifications
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Function to subscribe to contest notifications
+    async function subscribeToNotification(button, event) {
+      event.preventDefault();
+      
+      // Get contest data from button attributes
+      const contestData = {
+        contestId: button.getAttribute('data-contest-id'),
+        contestName: button.getAttribute('data-contest-name'),
+        platform: button.getAttribute('data-platform'),
+        startTime: button.getAttribute('data-start-time'),
+        duration: button.getAttribute('data-duration'),
+        contestUrl: button.getAttribute('data-contest-url')
+      };
+
+      // Show loading state
+      button.classList.add('loading');
+      const icon = button.querySelector('i');
+      const originalClass = icon.className;
+      icon.className = 'ri-loader-4-line';
+
+      try {
+        const response = await fetch('/subscribe-notification', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(contestData)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          button.classList.add('subscribed');
+          button.classList.remove('loading');
+          icon.className = 'ri-notification-3-fill';
+          showToast(result.message, 'success');
+          
+          // Change button behavior after subscription
+          button.setAttribute('onclick', 'unsubscribeFromNotification(this, event)');
+          button.title = 'Click to unsubscribe';
+        } else {
+          throw new Error(result.message);
+        }
+      } catch (error) {
+        console.error('Error subscribing to notification:', error);
+        showToast(error.message || 'Failed to subscribe to notifications', 'error');
+        
+        // Reset button state
+        button.classList.remove('loading');
+        icon.className = originalClass;
+      }
+    }
+
+    // Function to unsubscribe from contest notifications
+    async function unsubscribeFromNotification(button, event) {
+      event.preventDefault();
+      
+      const contestId = button.getAttribute('data-contest-id');
+      
+      // Show loading state
+      button.classList.add('loading');
+      const icon = button.querySelector('i');
+      icon.className = 'ri-loader-4-line';
+
+      try {
+        const response = await fetch(`/unsubscribe-notification/${contestId}`, {
+          method: 'DELETE'
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          button.classList.remove('subscribed', 'loading');
+          icon.className = 'ri-notification-3-fill';
+          showToast(result.message, 'success');
+          
+          // Change button behavior back to subscribe
+          button.setAttribute('onclick', 'subscribeToNotification(this, event)');
+          button.title = 'Click to get notified';
+        } else {
+          throw new Error(result.message);
+        }
+      } catch (error) {
+        console.error('Error unsubscribing:', error);
+        showToast('Failed to unsubscribe', 'error');
+        
+        // Reset button state
+        button.classList.remove('loading');
+        icon.className = 'ri-notification-3-fill';
+      }
+    }
+
+    // Load user's existing subscriptions on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('/my-notifications');
+        const result = await response.json();
+        
+        if (result.success) {
+          result.notifications.forEach(notification => {
+            const button = document.querySelector(`[data-contest-id="${notification.contestId}"]`);
+            if (button) {
+              button.classList.add('subscribed');
+              button.setAttribute('onclick', 'unsubscribeFromNotification(this, event)');
+              button.title = 'Click to unsubscribe';
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error loading user subscriptions:', error);
+      }
+    });
+  </script>
+
+        <%- include('footer') %>
+</body>
+</html>

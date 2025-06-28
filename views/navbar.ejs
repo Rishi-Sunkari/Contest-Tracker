@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My project</title>
+  <link rel="icon" type="image/png" href="/images/meme123.jpg" />
+<link rel="shortcut icon" href="/images/meme123.jpg" />
+
+  <link rel="stylesheet" href="/stylesheet/index.css">
+  <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+    rel="stylesheet"
+  />
+  
+</head>
+<body>
+  <div class="nav-bar">
+    <div class="nav-main">
+      <div class="logo">
+        <p><code>&lt;/&gt;</code> GetBackToCode</p>
+      </div>
+
+      <div class="hamburger" onclick="toggleMenu()">
+        <i class="ri-menu-line"></i>
+      </div>
+
+      <div class="nav-list" id="nav-menu">
+        <div class="home-list">
+          <ul id="nav-ul">
+            <li><a href="/">Home</a></li>
+            <li><a href="/upcomingcontests">Upcoming Contests</a></li>
+            <li><a href="/handles">Add Handles</a></li>
+          </ul>
+        </div>
+        <div class="logout">
+          <a href="/logout" class="logout-link">
+            <i class="ri-logout-box-r-line"></i> Logout
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const navMenu = document.getElementById("nav-menu");
+      navMenu.classList.toggle("show");
+    }
+  </script>
+</body>
+</html>

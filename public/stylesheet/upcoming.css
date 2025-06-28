@@ -1,0 +1,92 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9fafb;
+  color: #333;
+  line-height: 1.6;
+}
+#linkkk{
+  color: rgb(72, 4, 182);
+}
+.note{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+.table-container {
+  margin-top: 85px;
+  width: 100%;
+  min-height: 100vh;
+  padding: 40px 16px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: #f3f4f6;
+}
+
+.table-data {
+  width: 100%;
+  max-width: 1500px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+  overflow-x: auto; /* Enables horizontal scroll if needed */
+}
+
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px; /* Forces horizontal scroll on very small devices */
+}
+
+thead {
+  background-color: #0d1b2a;
+  color: white;
+}
+
+thead th {
+  padding: 12px 16px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+tbody tr:last-child {
+  border-bottom: none;
+}
+
+tbody td {
+  padding: 12px 16px;
+  white-space: nowrap;
+}
+
+tbody tr:hover {
+  background-color: #f0f4ff;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Responsive tweaks for smaller screens */
+@media (max-width: 768px) {
+  .table-data {
+    padding: 10px;
+  }
+
+  table {
+    font-size: 14px;
+  }
+
+  thead th,
+  tbody td {
+    padding: 10px;
+  }
+}

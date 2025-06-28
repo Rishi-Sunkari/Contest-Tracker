@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Contest Tracker</title>
+    <link rel="icon" type="image/png" href="/images/meme123.jpg" />
+<link rel="shortcut icon" href="/images/meme123.jpg" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"
+    />
+    <link rel="stylesheet" href="/stylesheet/main.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-gradient-to-br from-blue-50 to-indigo-100">
+    <!-- Navbar -->
+    <%- include('navbar') %>
+
+    <!-- Carousel -->
+<div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-[150px] mb-[30px]">
+  <div class="swiper horizontal-slide-carousel h-72 sm:h-96">
+    <div class="swiper-wrapper">
+      <% if (results) { %>
+  <% const platformImages = {
+    codeforces: '/images/codeforcesimg11.jpg',
+    leetcode: '/images/leetcode11.png',
+    codechef: '/images/codechef11.jpg',
+    atcoder: '/images/atcoder11.png',
+    tocoder: '/images/tocoder11.jpg'
+  }; %>
+  <% const Imagescolors = {
+  codeforces: 'from-amber-100 via-blue-200 to-red-300',
+  leetcode: 'from-white via-orange-200 to-black',
+  codechef: 'from-white via-[rgb(197, 162, 137)] to-[rgb(139,69,19)]', 
+  atcoder: 'from-white to-black',
+  tocoder: 'from-blue-100 to-pink-200'
+}; %>
+
+
+  <% Object.entries(results).forEach(([platform, rating]) => { 
+      const platformKey = platform.toLowerCase();
+      const handle = handles[platformKey];
+      const colorme = Imagescolors[platformKey];
+      const imageSrc = platformImages[platformKey] || '/images/no-data.gif'; 
+  %>
+    <div class="swiper-slide relative">
+      <div class="rounded-2xl h-72 sm:h-96 flex justify-center items-center relative overflow-hidden shadow-md bg-gradient-to-br <%= colorme %>">
+        
+        <img src="<%= imageSrc %>" alt="User Image" class="absolute top-4 left-4 w-12 h-12 rounded-full object-cover border-2 border-white shadow-md" />
+
+        <span class="text-xl sm:text-3xl font-semibold text-gray-800 z-10">
+          <%= platform %> Rating: <%= rating %>+
+        </span>
+
+        <span class="absolute bottom-4 right-4 text-sm sm:text-base text-gray-600 font-medium">
+       @<%= handles[platformKey] %>
+        </span>
+
+      </div>
+    </div>
+  <% }); %>
+<% } else { %>
+  <p>No ratings available.</p>
+<% } %>
+
+
+
+    </div>
+     <div class="swiper-pagination"></div>
+  </div>
+</div>
+
+<hr> 
+    
+<div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-[100px] mb-[100px]">
+  <div class="font-bold text-xl sm:text-2xl mb-4 text-center sm:text-left">
+    <p>Today's Contests</p>
+  </div>
+
+  <div class="todays">
+    <% if (contests.length === 0) { %>
+      <div class="flex flex-col items-center mt-5">
+        <img src="/images/no-data.gif" alt="No contests" class="w-40 h-40 sm:w-52 sm:h-52" />
+        <p class="mt-3 text-center text-gray-600 text-sm sm:text-base">No contests today.</p>
+      </div>
+    <% } else { %>
+      <!-- Wrap table in a scrollable container for small screens -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full border-collapse border border-gray-300 text-sm sm:text-base">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border border-gray-300 px-4 py-2 whitespace-nowrap">Platform</th>
+              <th class="border border-gray-300 px-4 py-2 whitespace-nowrap">Contest Name</th>
+              <th class="border border-gray-300 px-4 py-2 whitespace-nowrap">Start Time</th>
+              <th class="border border-gray-300 px-4 py-2 whitespace-nowrap">End Time</th>
+              <th class="border border-gray-300 px-4 py-2 whitespace-nowrap">Duration (mins)</th>
+              <th class="border border-gray-300 px-4 py-2 whitespace-nowrap">Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% contests.forEach(contest => { %>
+              <tr class="hover:bg-gray-50">
+                <td class="border border-gray-300 px-4 py-2 whitespace-nowrap"><%= contest.platform %></td>
+                <td class="border border-gray-300 px-4 py-2 whitespace-nowrap"><%= contest.name %></td>
+                <td class="border border-gray-300 px-4 py-2 whitespace-nowrap"><%= contest.startDisplay %></td>
+                <td class="border border-gray-300 px-4 py-2 whitespace-nowrap"><%= contest.endDisplay %></td>
+                <td class="border border-gray-300 px-4 py-2 whitespace-nowrap"><%= contest.duration %> mins</td>
+                <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">
+                  <a href="<%= contest.url %>" target="_blank" class="text-blue-600 hover:underline">Join</a>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+
+
+
+<div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-[100px] mb-[100px]">
+  <div class="font-bold text-xl mb-4 flex items-center gap-2">
+    <p>Ongoing contests</p>
+    <span class="relative flex h-5 w-5">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-5 w-5 bg-green-600"></span>
+    </span>
+  </div>
+
+  <div class="todays">
+    <% if (contests1.length === 0) { %>
+      <div class="flex flex-col items-center mt-5">
+        <img src="/images/no-data.gif" alt="Loading..." class="w-42 h-42" />
+        <p class="mt-3 text-center text-gray-600">No contests ongoing currently.</p>
+      </div>
+    <% } else { %>
+      <!-- Mobile View -->
+      <div class="block md:hidden space-y-4">
+        <% contests1.forEach(contest => { %>
+          <div class="border rounded-lg p-4 shadow-sm bg-white">
+            <div class="text-sm text-gray-500 font-medium"><%= contest.platform %></div>
+            <div class="font-semibold text-base"><%= contest.name %></div>
+            <div class="text-sm mt-1"><strong>Start:</strong> <%= contest.startDisplay %></div>
+            <div class="text-sm"><strong>End:</strong> <%= contest.endDisplay %></div>
+            <div class="text-sm"><strong>Duration:</strong> <%= contest.duration %> mins</div>
+            <div class="mt-2">
+              <a href="<%= contest.url %>" target="_blank" class="text-blue-600 hover:underline text-sm">Join Contest</a>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- Desktop View -->
+      <div class="hidden md:block">
+        <table class="min-w-full border-collapse border border-gray-300">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border border-gray-300 px-4 py-2">Platform</th>
+              <th class="border border-gray-300 px-4 py-2">Contest Name</th>
+              <th class="border border-gray-300 px-4 py-2">Start Time</th>
+              <th class="border border-gray-300 px-4 py-2">End Time</th>
+              <th class="border border-gray-300 px-4 py-2">Duration (mins)</th>
+              <th class="border border-gray-300 px-4 py-2">Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% contests1.forEach(contest => { %>
+              <tr class="hover:bg-gray-50">
+                <td class="border border-gray-300 px-4 py-2"><%= contest.platform %></td>
+                <td class="border border-gray-300 px-4 py-2"><%= contest.name %></td>
+                <td class="border border-gray-300 px-4 py-2"><%= contest.startDisplay %></td>
+                <td class="border border-gray-300 px-4 py-2"><%= contest.endDisplay %></td>
+                <td class="border border-gray-300 px-4 py-2"><%= contest.duration %> mins</td>
+                <td class="border border-gray-300 px-4 py-2">
+                  <a href="<%= contest.url %>" target="_blank" class="text-blue-600 hover:underline">Join</a>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+
+
+
+     <%- include('footer') %>
+
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+
+    <script>
+     const swiper = new Swiper(".horizontal-slide-carousel", {
+            loop: true,
+            direction: "horizontal",
+            spaceBetween: 40,
+            grabCursor: true,
+            autoplay: {
+              delay: 2500,           // time between slides in ms (3 seconds)
+              disableOnInteraction: false, // allow manual interaction without disabling autoplay
+            },
+            mousewheel: {
+              forceToAxis: true,
+              releaseOnEdges: true,
+            },
+            pagination: {
+              el: '.swiper-pagination',
+              clickable: true,   // allow clicking on bullets to change slides
+            },
+          });
+    </script>
+  </body>
+</html>
