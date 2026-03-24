@@ -1,28 +1,7 @@
-const mongoose = require('mongoose');
+// FIX: import the already-initialized db from firebase.js
+// instead of calling admin.firestore() directly (which crashes if firebase isn't initialized yet)
+const { db } = require('./firebase');
 
-mongoose.connect('mongodb://localhost:27017/contesttracking, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log("MongoDB connected successfully.");
-}).catch(err => {
-    console.error("MongoDB connection error:", err);
-});
+const UserHandle = db.collection('userhandles');
 
-const userSchema1 = new mongoose.Schema({
-     userid: {
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User',
-        required: true
-    },
-    codeforces: String,
-    leetcode: String,
-    codechef : String,
-    atcoder : String,
-    tocoder: String
-});
-
-module.exports = mongoose.model("userhandle", userSchema1);
-
-
-
+module.exports = UserHandle;

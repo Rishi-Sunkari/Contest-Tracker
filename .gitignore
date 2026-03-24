@@ -1,1 +1,8 @@
 node_modules/
+desktop.ini
+100522729059_os/
+
+# FIX: never commit secrets to git
+.env
+*.json.key
+*firebase-adminsdk*.json

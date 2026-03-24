@@ -27,7 +27,7 @@
 <div class="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-[150px] mb-[30px]">
   <div class="swiper horizontal-slide-carousel h-72 sm:h-96">
     <div class="swiper-wrapper">
-      <% if (results) { %>
+      <% if (results && Object.keys(results).length > 0) { %>
   <% const platformImages = {
     codeforces: '/images/codeforcesimg11.jpg',
     leetcode: '/images/leetcode11.png',
@@ -59,15 +59,25 @@
           <%= platform %> Rating: <%= rating %>+
         </span>
 
-        <span class="absolute bottom-4 right-4 text-sm sm:text-base text-gray-600 font-medium">
-       @<%= handles[platformKey] %>
-        </span>
+        <% if (handle) { %>
+          <span class="absolute bottom-4 right-4 text-sm sm:text-base text-gray-600 font-medium">
+            @<%= handle %>
+          </span>
+        <% } %>
 
       </div>
     </div>
   <% }); %>
 <% } else { %>
-  <p>No ratings available.</p>
+    <div class="swiper-slide relative">
+      <div class="rounded-2xl h-72 sm:h-96 flex justify-center items-center relative overflow-hidden shadow-md bg-gray-100">
+        <div class="text-center">
+            <img src="/images/no-data.gif" alt="No data" class="w-40 h-40 mx-auto" />
+            <p class="mt-3 text-gray-600">No rating data available.</p>
+            <p class="text-sm text-gray-500">Go to the 'Handles' page to add your usernames.</p>
+        </div>
+      </div>
+    </div>
 <% } %>
 
 
